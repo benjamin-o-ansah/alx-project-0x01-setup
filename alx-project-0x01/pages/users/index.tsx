@@ -1,33 +1,70 @@
-import { GetStaticProps } from "next";
-import Layout from "@/components/layout/Layout";
-import UserCard from "@/components/users/UserCard";
-import { User } from "@/interfaces/user";
+import { useState } from "react";
+import Header from "@/components/layout/Header";
+import UserCard from "@/components/common/UserCard";
+import UserModal from "@/components/common/UserModal";
+import { UserData } from "@/interfaces";
 
 interface UsersPageProps {
-  users: User[];
+  users: UserData[];
 }
 
-export default function UsersPage({ users }: UsersPageProps) {
+const Users: React.FC<UsersPageProps> = ({ users }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [userList, setUserList] = useState<UserData[]>(users);
+
+  // ✅ APPLY IT HERE
+  const handleAddUser = (user: UserData) => {
+    setUserList((prev) => [
+      ...prev,
+      {
+        ...user,
+        id: prev.length + 1, // guarantee ID
+      },
+    ]);
+  };
+
   return (
-    <Layout>
-      <h1 className="text-2xl font-semibold mb-6">Users</h1>
+    <div className="flex flex-col min-h-screen">
+      <Header />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {users.map((user) => (
-          <UserCard key={user.id} user={user} />
-        ))}
-      </div>
-    </Layout>
+      <main className="p-4">
+        <div className="flex justify-between mb-4">
+          <h1 className="text-2xl font-semibold">Users</h1>
+
+          <button
+            onClick={() => setModalOpen(true)}
+            className="bg-blue-700 px-4 py-2 rounded-full text-white"
+          >
+            Add User
+          </button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {userList.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
+        </div>
+      </main>
+
+      {isModalOpen && (
+        <UserModal
+          onClose={() => setModalOpen(false)}
+          onSubmit={handleAddUser}
+        />
+      )}
+    </div>
   );
-}
+};
 
-export const getStaticProps: GetStaticProps = async () => {
+export async function getStaticProps() {
   const res = await fetch("https://jsonplaceholder.typicode.com/users");
-  const users: User[] = await res.json();
+  const users = await res.json();
 
   return {
     props: {
       users,
     },
   };
-};
+}
+
+export default Users;
