@@ -2,18 +2,17 @@ import { useState } from "react";
 import Header from "@/components/layout/Header";
 import UserCard from "@/components/common/UserCard";
 import UserModal from "@/components/common/UserModal";
-import { UserData } from "@/interfaces";
+import { UserProps } from "@/interfaces";
 
 interface UsersPageProps {
-  users: UserData[];
+  users: UserProps[];
 }
 
 const Users: React.FC<UsersPageProps> = ({ users }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [userList, setUserList] = useState<UserData[]>(users);
+  const [userList, setUserList] = useState<UserProps[]>(users);
 
-  // ✅ APPLY IT HERE
-  const handleAddUser = (user: UserData) => {
+  const handleAddUser = (user: UserProps) => {
     setUserList((prev) => [
       ...prev,
       {
