@@ -1,6 +1,6 @@
 import { GetStaticProps } from "next";
 import Layout from "@/components/layout/Layout";
-import PostCard from "@/components/posts/PostCard";
+import PostCard from "@/components/common/PostCard";
 import { Post } from "@/interfaces/post";
 
 interface PostsPageProps {
